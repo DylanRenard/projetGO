@@ -3,16 +3,19 @@ package projetGO;
 public class Grille 
 {
 	//Variables
+	private int dim;
 	private Pion[][] grille;
 	private String couleurJoueur = "Blanc";
-	
+	private boolean partieFinie = false;
 	
 	//Constructeur
 	Grille(int dim)
 	{
+		this.dim = dim;
+		
 		grille = new Pion[dim][dim];
 		for (int i = 0 ; i<13 ; i++)
-			for(int j = 0 ; j<13 ; j++)
+			for (int j = 0 ; j<13 ; j++)
 				grille[i][j]=null;
 	}
 	
@@ -27,7 +30,8 @@ public class Grille
 	{
 		boolean valide = true;
 		
-		if(caseOccupee(x, y)!=null) valide=false;
+		if (x<0 || y<0 || x>=dim || y>=dim) valide = false;
+		else if (caseOccupee(x, y)!=null) valide=false;
 		//TODO ajout des conditions de placement : position entre 4 pions adverses et/ou emplacement ou le pion viens d etre enleve
 		
 		return valide;
@@ -40,6 +44,10 @@ public class Grille
 			grille[x][y] = new Pion(x,y,couleurJoueur);
 			//TODO associer a un groupe + enlever les pions adverses
 			
+			
+			
+			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;
+			
 			return true;
 		}
 		else return false;
@@ -47,5 +55,5 @@ public class Grille
 	
 	
 	//Getteur Setteur (si besoin)
-	
+	public boolean getPartieFinie() {return partieFinie;}
 }
