@@ -1,13 +1,20 @@
 package projetGO;
 
-public class Grille 
+import java.util.ArrayList;
+
+public class Grille
 {
 	//Variables
-	private int dim;						//dimension de la grille
-	private Pion[][] grille;				//representation de la grille
-	private String couleurJoueur = "Blanc";	//couleur du joueur en cour
-	private boolean partieFinie = false;	//indicateur de fin de partie
-	private Pion residu = null;				//memoire du pion unique detruit au tour precedent
+	private int dim;							//dimension de la grille
+	private Pion[][] grille;					//representation de la grille
+	private String couleurJoueur = "Blanc";		//couleur du joueur en cour
+	private Pion residu = null;					//memoire du pion unique detruit au tour precedent
+	private int nbPionBlancDetruit = 0;			//nombre de pion blanc detruit
+	private int nbPionNoirDetruit = 0;			//nombre de pion noir detruit
+	private boolean joueurpasse = false;		//le joueur precedent a passe
+	private ArrayList <GroupePion> listeGroupe;	//liste des groupes presents dans la grille
+	private int nbCaseLibre;
+	private boolean partieFinie = false;		//indicateur de fin de partie
 	
 	//Constructeur
 	public Grille(int dim)
@@ -18,13 +25,16 @@ public class Grille
 		for (int i = 0 ; i<dim ; i++)
 			for (int j = 0 ; j<dim ; j++)
 				grille[i][j]=null;
+		listeGroupe = new ArrayList<GroupePion>();
+		nbCaseLibre=dim*dim;
 	}
 	
 	
 	//Methodes
 	public boolean caseOccupee(int x, int y)		//renvoie vrai si la case est occupee, faux sinon
 	{
-		return grille[x][y]!=null;
+		if(x<0 || y<0 || x>=dim || y>=dim) return false;
+		else return grille[x][y]!=null;
 	}
 	
 	public boolean placementValide(int x, int y)	//renvoie vrai si on peut placer le pion a l endroit indique, faux sinon
@@ -47,8 +57,13 @@ public class Grille
 					&& grille[x-1][y].getGP().getNbLiberte()-1 > 0
 					&& grille[x][y-1].getGP().getNbLiberte()-1 > 0 ) valide = false;
 		}
-		//TODO ajout des conditions de placement
 		//si on enleve la derniere liberte d un de ses propres groupes
+		else if ((caseOccupee(x+1,y) 
+				&& grille[x+1][y].getCouleur()==couleurJoueur 
+				&& grille[x+1][y].getGP().getNbLiberte()==1)	
+			|| (caseOccupee(x-1,y) 
+				&& grille[x-1][y].getCouleur()==couleurJoueur 
+				&& grille[x-1][y].getGP().getNbLiberte()==1)) valide = false;
 		
 		return valide;
 	}
@@ -61,24 +76,178 @@ public class Grille
 		if (placementValide(x,y))				//on cree un pion si on peut le placer puis on verifie ses cases adjacentes
 		{
 			grille[x][y] = new Pion(x,y,couleurJoueur);
+			nbCaseLibre--;
 			
-			//TODO associer a un groupe + enlever les pions adverses
-			//verification à x+1 , x-1 , y+1 et y-1
-			//si adversaire => regarder son groupe, si liberte => liberte-1, si plus de liberté => le supprimer
-			//si alié => ajout au groupe et maj des libertés
-			//si allié d'un 2è groupe => fusion des groupes et maj des libertés
-			//si personne à la fin => création d'un groupe
+			boolean rencontreAllie = false;
+			int nbDetruit;
 			
+			if(caseOccupee(x+1,y))
+			{
+				if(grille[x+1][y].getCouleur()==couleurJoueur)
+				{
+					grille[x+1][y].getGP().ajouterPion(grille[x][y], this);
+					rencontreAllie = true;
+				}
+				else 
+				{
+					if (grille[x+1][y].getGP().getGroupe()[x+1][y]!=null)
+					{
+						grille[x+1][y].getGP().getGroupe()[x+1][y]=null;
+						grille[x+1][y].getGP().incNbLiberte(-1);
+						
+						if (grille[x+1][y].getGP().getNbLiberte()==0) 
+						{
+							listeGroupe.remove(grille[x+1][y].getGP());
+							nbDetruit=grille[x+1][y].getGP().destruction(this);
+							if(nbDetruit==1) residu=grille[x+1][y];
+							upDateResidu = true;
+							if(couleurJoueur=="Blanc") nbPionNoirDetruit+=nbDetruit;
+							else nbPionBlancDetruit+=nbDetruit;
+							nbCaseLibre+=nbDetruit;
+						}
+					}
+				}
+			}
+			if(caseOccupee(x,y+1))
+			{
+				if(grille[x][y+1].getCouleur()==couleurJoueur)
+					if(rencontreAllie && grille[x][y].getGP()!=grille[x][y+1].getGP())
+					{
+						listeGroupe.remove(grille[x][y+1].getGP());
+						grille[x][y].getGP().fusion(grille[x][y+1].getGP());
+					}
+					else grille[x][y+1].getGP().ajouterPion(grille[x][y], this);
+				else 
+				{
+					if (grille[x][y+1].getGP().getGroupe()[x][y+1]!=null)
+					{
+						grille[x][y+1].getGP().getGroupe()[x][y+1]=null;
+						grille[x][y+1].getGP().incNbLiberte(-1);
+						
+						if (grille[x][y+1].getGP().getNbLiberte()==0)
+						{
+							listeGroupe.remove(grille[x][y+1].getGP());
+							nbDetruit=grille[x][y+1].getGP().destruction(this);
+							if(nbDetruit==1) residu=grille[x][y+1];
+							upDateResidu = true;
+							if(couleurJoueur=="Blanc") nbPionNoirDetruit+=nbDetruit;
+							else nbPionBlancDetruit+=nbDetruit;
+							nbCaseLibre+=nbDetruit;
+						}
+					}
+				}
+			}		
+			if(caseOccupee(x-1,y))
+			{
+				if(grille[x-1][y].getCouleur()==couleurJoueur)
+					if(rencontreAllie && grille[x][y].getGP()!=grille[x-1][y].getGP())
+					{
+						listeGroupe.remove(grille[x-1][y].getGP());
+						grille[x][y].getGP().fusion(grille[x-1][y].getGP());
+					}
+					else grille[x-1][y].getGP().ajouterPion(grille[x][y], this);
+				else 
+				{
+					if (grille[x-1][y].getGP().getGroupe()[x-1][y]!=null)
+					{
+						grille[x-1][y].getGP().getGroupe()[x-1][y]=null;
+						grille[x-1][y].getGP().incNbLiberte(-1);
+						
+						if (grille[x-1][y].getGP().getNbLiberte()==0) 
+						{
+							listeGroupe.remove(grille[x-1][y].getGP());
+							nbDetruit=grille[x-1][y].getGP().destruction(this);
+							if(nbDetruit==1) residu=grille[x-1][y];
+							upDateResidu = true;
+							if(couleurJoueur=="Blanc") nbPionNoirDetruit+=nbDetruit;
+							else nbPionBlancDetruit+=nbDetruit;
+							nbCaseLibre+=nbDetruit;
+						}
+					}
+				}
+			}	
+			if(caseOccupee(x,y-1))
+			{
+				if(grille[x][y-1].getCouleur()==couleurJoueur)
+					if(rencontreAllie && grille[x][y].getGP()!=grille[x][y-1].getGP())
+					{
+						listeGroupe.remove(grille[x][y-1].getGP());
+						grille[x][y].getGP().fusion(grille[x][y-1].getGP());
+					}
+					else grille[x][y-1].getGP().ajouterPion(grille[x][y], this);
+				else 
+				{
+					if (grille[x][y-1].getGP().getGroupe()[x][y-1]!=null)
+					{
+						grille[x][y-1].getGP().getGroupe()[x][y-1]=null;
+						grille[x][y-1].getGP().incNbLiberte(-1);
+						
+						if (grille[x][y-1].getGP().getNbLiberte()==0) 
+						{
+							listeGroupe.remove(grille[x][y-1].getGP());
+							nbDetruit=grille[x][y-1].getGP().destruction(this);
+							if(nbDetruit==1) residu=grille[x][y-1];
+							upDateResidu = true;
+							if(couleurJoueur=="Blanc") nbPionNoirDetruit+=nbDetruit;
+							else nbPionBlancDetruit+=nbDetruit;
+							nbCaseLibre+=nbDetruit;
+						}
+					}
+				}
+			}
 			
+			if(!rencontreAllie) listeGroupe.add(new GroupePion(grille[x][y],this));
+				
 			if(!upDateResidu) residu = null;	//si le residu n'a pas ete mis a jour il disparait
-			
-			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;	//la couleur du joueur change pour le prochain tour
 			
 			return true;
 		}
 		else return false;
 	}
 	
+	public void jouerUnTour(String passer)
+	{
+		if (passer=="passer")
+		{
+			if(joueurpasse)
+			{
+				partieFinie = true;
+				decomptePoints();
+			}
+			
+			joueurpasse=true;
+			
+			if(couleurJoueur=="Blanc") nbPionBlancDetruit++;
+			else nbPionNoirDetruit++;
+			
+			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;
+		}
+	}
+	
+	public void jouerUnTour(int x,int y)
+	{
+		if(placerPion(x,y))
+		{
+			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;	//la couleur du joueur change pour le prochain tour
+		}
+	}
+	
+	//TODO calcul points 
+	//=> a la fin de l partie
+	//=> combler les liberte des ses groupes avec ses pions detruits
+	//=> regarder a chaque groupe s il se fait manger (seuls les groupes ayant un pion sur un bord ne seront pas detruit)
+	//=> reiterer
+	//=> compter le nombre de pions poses - nb de pions detruit
+	public void decomptePoints()
+	{
+		while(nbCaseLibre>0)
+		{
+			for(GroupePion gp : listeGroupe)
+			{
+				//TODO faire la fonction
+			}
+		}
+	}
 	
 	//Getteurs Setteurs
 	public boolean getPartieFinie() {return partieFinie;}

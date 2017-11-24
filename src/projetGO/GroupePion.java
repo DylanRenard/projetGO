@@ -5,8 +5,9 @@ public class GroupePion
 	//rassembler les pions par groupe pour avoir les "libertes" du groupe
 	
 	//Variables
-	private Pion[][] groupe;	//"grille" secondaire contenant que les elements du groupe
-	private int nbLiberte=0;	//nombre de liberte du groupe
+	private Pion[][] groupe;		//"grille" secondaire contenant que les elements du groupe
+	private int nbLiberte=0;		//nombre de liberte du groupe
+	private boolean occupeUnBord;	//indique si un pion du groupe est sur le bord de la grille
 	
 	//Constructeur
 	public GroupePion(Pion p, Grille g)		//on cree un groupe pour un pion isole
@@ -27,6 +28,9 @@ public class GroupePion
 		if (y+1<groupe.length && !g.caseOccupee(x, y+1)) { groupe[x][y+1] = new Pion(x, y+1 , "Liberte", this); nbLiberte++; }
 		if (x-1>=0 && !g.caseOccupee(x-1, y)) { groupe[x-1][y] = new Pion(x-1, y , "Liberte", this); nbLiberte++; }
 		if (y-1>=0 && !g.caseOccupee(x, y-1)) { groupe[x][y-1] = new Pion(x, y-1 , "Liberte", this); nbLiberte++; }
+		
+		if(x==0 || y==0 || x==g.getDim()-1 || y==g.getDim()-1) occupeUnBord = true;
+		else occupeUnBord=false;
 	}
 	
 	//Methodes
@@ -43,6 +47,8 @@ public class GroupePion
 		if (y+1<groupe.length && !g.caseOccupee(x,y+1) && groupe[x][y+1] == null) { groupe[x][y+1] = new Pion(x, y+1 , "Liberte", this); nbLiberte++; }
 		if (x-1>=0 && !g.caseOccupee(x-1,y) && groupe[x-1][y] == null) { groupe[x-1][y] = new Pion(x-1, y , "Liberte", this); nbLiberte++; }
 		if (y-1>=0 && !g.caseOccupee(x,y-1) && groupe[x][y-1] == null) { groupe[x][y-1] = new Pion(x, y-1 , "Liberte", this); nbLiberte++; }
+	
+		if(x==0 || y==0 || x==g.getDim()-1 || y==g.getDim()-1) occupeUnBord = true;
 	}
 		
 	public void fusion(GroupePion gp)	//fusion du groupe actuel avec un groupe a fusioner
@@ -70,6 +76,7 @@ public class GroupePion
 					groupe[i][j].setGP(this);
 				}
 			}
+		if (gp.getOccupeUnBord()) occupeUnBord=true;
 	}
 	
 	public int destruction(Grille g)	//renvoie le nombre de pion effectivement detruit
@@ -124,10 +131,19 @@ public class GroupePion
 		return nbPionEnleve;
 	}
 	
+	public int remplirLiberte()
+	{
+		//TODO faire la fonction renvoie le nombre de pion ajoute
+		
+		return 0;
+	}
+	
 	//Getteurs Setteurs
 	public Pion[][] getGroupe() {return groupe;}
 	
 	public int getNbLiberte() {return nbLiberte;}
+	
+	public boolean getOccupeUnBord() {return occupeUnBord;}
 	
 	public void incNbLiberte(int n) {nbLiberte+=n;}
 }
