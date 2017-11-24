@@ -22,12 +22,12 @@ public class Grille
 	
 	
 	//Methodes
-	public boolean caseOccupee(int x, int y)	//TODO verifier si c est bon
+	public boolean caseOccupee(int x, int y)		//renvoie vrai si la case est occupee, faux sinon
 	{
 		return grille[x][y]!=null;
 	}
 	
-	public boolean placementValide(int x, int y)
+	public boolean placementValide(int x, int y)	//renvoie vrai si on peut placer le pion a l endroit indique, faux sinon
 	{
 		boolean valide = true;
 		//si on est pas sur la grille
@@ -35,12 +35,12 @@ public class Grille
 		//si on place a l endroit du residu
 		else if (residu != null && x == residu.getX() && y == residu.getY()) valide = false;
 		//si on place ou il y a deja un pion
-		else if (!caseOccupee(x, y)) valide=false;
-		//si on place au millieu de 4 adversaire sans engendrer la destruction d un groupe adverse
-		else if (!caseOccupee(x+1,y) && grille[x+1][y].getCouleur() != couleurJoueur
-				&& !caseOccupee(x,y+1) && grille[x][y+1].getCouleur() != couleurJoueur
-				&& !caseOccupee(x-1,y) && grille[x-1][y].getCouleur() != couleurJoueur
-				&& !caseOccupee(x,y-1) && grille[x][y-1].getCouleur() != couleurJoueur)
+		else if (caseOccupee(x, y)) valide=false;
+		//si on place au millieu de 4 adversaires sans engendrer la destruction d au moins un groupe adverse
+		else if (caseOccupee(x+1,y) && grille[x+1][y].getCouleur() != couleurJoueur
+				&& caseOccupee(x,y+1) && grille[x][y+1].getCouleur() != couleurJoueur
+				&& caseOccupee(x-1,y) && grille[x-1][y].getCouleur() != couleurJoueur
+				&& caseOccupee(x,y-1) && grille[x][y-1].getCouleur() != couleurJoueur)
 		{
 			if ( grille[x+1][y].getGP().getNbLiberte()-1 > 0
 					&& grille[x][y+1].getGP().getNbLiberte()-1 > 0
@@ -53,11 +53,12 @@ public class Grille
 		return valide;
 	}
 	
-	public boolean placerPion(int x, int y)
+	public boolean placerPion(int x, int y)		//renvoie vrai si le pion a effectivement ete place a l endroit indique
 	{
-		boolean upDateResidu = false;//a passer a true si on enleve un unique pion (si destruction renvoie 1)
+		boolean upDateResidu = false;			//indique si le residu a ete mis a jour pendant ce tour
+		//a passer a true si on enleve un unique pion (si destruction renvoie 1)
 		
-		if (placementValide(x,y))
+		if (placementValide(x,y))				//on cree un pion si on peut le placer puis on verifie ses cases adjacentes
 		{
 			grille[x][y] = new Pion(x,y,couleurJoueur);
 			
@@ -69,9 +70,9 @@ public class Grille
 			//si personne à la fin => création d'un groupe
 			
 			
-			if(!upDateResidu) residu = null;
+			if(!upDateResidu) residu = null;	//si le residu n'a pas ete mis a jour il disparait
 			
-			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;
+			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;	//la couleur du joueur change pour le prochain tour
 			
 			return true;
 		}
@@ -79,7 +80,7 @@ public class Grille
 	}
 	
 	
-	//Getteur Setteur (si besoin)
+	//Getteurs Setteurs
 	public boolean getPartieFinie() {return partieFinie;}
 	
 	public int getDim() {return dim;}
