@@ -14,6 +14,7 @@ public class Pion
 		this.x=x;
 		this.y=y;
 		this.couleur=couleur;
+		
 	}
 	
 	public Pion (int x, int y, String couleur, GroupePion gp)
@@ -31,6 +32,7 @@ public class Pion
 	
 	public int getY() {return y;}
 	
+	public String getCouleur(){return couleur;}
 	
 	public void setGP(GroupePion gp) {this.gp = gp;}
 }

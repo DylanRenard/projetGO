@@ -6,6 +6,7 @@ public class Grille
 	private int dim;
 	private Pion[][] grille;
 	private String couleurJoueur = "Blanc";
+	private String couleurAdverse = "Noir";
 	private boolean partieFinie = false;
 	
 	//Constructeur
@@ -26,12 +27,13 @@ public class Grille
 		return grille[x][y];
 	}
 	
-	public boolean placementValide(int x, int y)
+	public boolean placementValide(int x, int y)throws CoupException
 	{
 		boolean valide = true;
 		
 		if (x<0 || y<0 || x>=dim || y>=dim) valide = false;
 		else if (caseOccupee(x, y)!=null) valide=false;
+		else if((grille[x+1][y].getCouleur()== couleurAdverse)&&(grille[x+1][y].getCouleur()== couleurAdverse)&&(grille[x+1][y].getCouleur()== couleurAdverse)&&(grille[x+1][y].getCouleur()== couleurAdverse)){throw new CoupException();}
 		//TODO ajout des conditions de placement
 		//position entre 4 pions adverses
 		//emplacement ou le pion viens d etre enleve
@@ -39,7 +41,7 @@ public class Grille
 		return valide;
 	}
 	
-	public boolean placerPion(int x, int y)
+	public boolean placerPion(int x, int y) throws Exception
 	{
 		if (placementValide(x,y))
 		{
