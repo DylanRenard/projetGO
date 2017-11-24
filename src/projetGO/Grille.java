@@ -9,7 +9,7 @@ public class Grille
 	private boolean partieFinie = false;
 	
 	//Constructeur
-	Grille(int dim)
+	public Grille(int dim)
 	{
 		this.dim = dim;
 		
@@ -32,7 +32,9 @@ public class Grille
 		
 		if (x<0 || y<0 || x>=dim || y>=dim) valide = false;
 		else if (caseOccupee(x, y)!=null) valide=false;
-		//TODO ajout des conditions de placement : position entre 4 pions adverses et/ou emplacement ou le pion viens d etre enleve
+		//TODO ajout des conditions de placement
+		//position entre 4 pions adverses
+		//emplacement ou le pion viens d etre enleve
 		
 		return valide;
 	}
@@ -42,7 +44,13 @@ public class Grille
 		if (placementValide(x,y))
 		{
 			grille[x][y] = new Pion(x,y,couleurJoueur);
+			
 			//TODO associer a un groupe + enlever les pions adverses
+			//verification à x+1 , x-1 , y+1 et y-1
+			//si adversaire => regarder son groupe, si plus de liberté => le supprimer
+			//si alié => ajout au groupe et maj des libertés
+			//si alié d'un 2è groupe => fusion des groupes et maj des libertés
+			//si personne à la fin => création d'un groupe
 			
 			
 			
@@ -56,4 +64,6 @@ public class Grille
 	
 	//Getteur Setteur (si besoin)
 	public boolean getPartieFinie() {return partieFinie;}
+	
+	public int getDim() {return dim;}
 }
