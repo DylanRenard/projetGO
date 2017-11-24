@@ -31,6 +31,10 @@ public class Pion
 	
 	public int getY() {return y;}
 	
+	public String getCouleur() {return couleur;}
+	
+	public GroupePion getGP() {return gp;}
+	
 	
 	public void setGP(GroupePion gp) {this.gp = gp;}
 }
