@@ -6,6 +6,9 @@ public class Main {
 	{
 		Grille g = new Grille(13);
 		
+		Fenetre fen = new Fenetre();
+		fen.pannel();
+		
 		while(!g.getPartieFinie())
 		{
 			//TODO déroulement d un tour de jeu
