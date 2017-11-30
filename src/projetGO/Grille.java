@@ -90,9 +90,9 @@ public class Grille
 				}
 				else 
 				{
-					if (grille[x+1][y].getGP().getGroupe()[x+1][y]!=null)
+					if (grille[x+1][y].getGP().getGroupe()[x][y]!=null)
 					{
-						grille[x+1][y].getGP().getGroupe()[x+1][y]=null;
+						grille[x+1][y].getGP().getGroupe()[x][y]=null;
 						grille[x+1][y].getGP().incNbLiberte(-1);
 						
 						if (grille[x+1][y].getGP().getNbLiberte()==0) 
@@ -119,9 +119,9 @@ public class Grille
 					else grille[x][y+1].getGP().ajouterPion(grille[x][y], this);
 				else 
 				{
-					if (grille[x][y+1].getGP().getGroupe()[x][y+1]!=null)
+					if (grille[x][y+1].getGP().getGroupe()[x][y]!=null)
 					{
-						grille[x][y+1].getGP().getGroupe()[x][y+1]=null;
+						grille[x][y+1].getGP().getGroupe()[x][y]=null;
 						grille[x][y+1].getGP().incNbLiberte(-1);
 						
 						if (grille[x][y+1].getGP().getNbLiberte()==0)
@@ -148,9 +148,9 @@ public class Grille
 					else grille[x-1][y].getGP().ajouterPion(grille[x][y], this);
 				else 
 				{
-					if (grille[x-1][y].getGP().getGroupe()[x-1][y]!=null)
+					if (grille[x-1][y].getGP().getGroupe()[x][y]!=null)
 					{
-						grille[x-1][y].getGP().getGroupe()[x-1][y]=null;
+						grille[x-1][y].getGP().getGroupe()[x][y]=null;
 						grille[x-1][y].getGP().incNbLiberte(-1);
 						
 						if (grille[x-1][y].getGP().getNbLiberte()==0) 
@@ -177,9 +177,9 @@ public class Grille
 					else grille[x][y-1].getGP().ajouterPion(grille[x][y], this);
 				else 
 				{
-					if (grille[x][y-1].getGP().getGroupe()[x][y-1]!=null)
+					if (grille[x][y-1].getGP().getGroupe()[x][y]!=null)
 					{
-						grille[x][y-1].getGP().getGroupe()[x][y-1]=null;
+						grille[x][y-1].getGP().getGroupe()[x][y]=null;
 						grille[x][y-1].getGP().incNbLiberte(-1);
 						
 						if (grille[x][y-1].getGP().getNbLiberte()==0) 
@@ -229,6 +229,7 @@ public class Grille
 		if(placerPion(x,y))
 		{
 			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;	//la couleur du joueur change pour le prochain tour
+			joueurpasse=false;
 		}
 	}
 	
@@ -255,4 +256,8 @@ public class Grille
 	public int getDim() {return dim;}
 	
 	public Pion[][] getGrille() {return grille;}
+	
+	public Pion getResidu() {return residu;}
+	
+	public ArrayList <GroupePion> getListeGroupe() {return listeGroupe;}
 }
