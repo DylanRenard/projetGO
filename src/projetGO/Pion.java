@@ -5,7 +5,7 @@ public class Pion
 	//Variables
 	private int x;				//coordonnee en x
 	private int y;				//coordonnee en y
-	private String couleur;		//couleur du pion : Blanc, Noir ou Liberte
+	private String couleur;		//couleur du pion : Blanc, Noir, Liberte ou Territoire
 	private GroupePion gp;		//groupe auquel il appartient
 	
 	//Constructeurs

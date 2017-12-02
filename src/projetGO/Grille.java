@@ -1,4 +1,5 @@
 package projetGO;
+//TODO calcul point : faire groupe de pion vide => regarder s'il est lié à une seule couleur => si oui, territoire de cette couleur, si non, zone neutre.
 
 import java.util.ArrayList;
 
@@ -13,7 +14,6 @@ public class Grille
 	private int nbPionNoirDetruit = 0;			//nombre de pion noir detruit
 	private boolean joueurpasse = false;		//le joueur precedent a passe
 	private ArrayList <GroupePion> listeGroupe;	//liste des groupes presents dans la grille
-	private int nbCaseLibre;
 	private boolean partieFinie = false;		//indicateur de fin de partie
 	
 	//Constructeur
@@ -26,7 +26,6 @@ public class Grille
 			for (int j = 0 ; j<dim ; j++)
 				grille[i][j]=null;
 		listeGroupe = new ArrayList<GroupePion>();
-		nbCaseLibre=dim*dim;
 	}
 	
 	
@@ -76,7 +75,6 @@ public class Grille
 		if (placementValide(x,y))				//on cree un pion si on peut le placer puis on verifie ses cases adjacentes
 		{
 			grille[x][y] = new Pion(x,y,couleurJoueur);
-			nbCaseLibre--;
 			
 			boolean rencontreAllie = false;
 			int nbDetruit;
@@ -98,12 +96,16 @@ public class Grille
 						if (grille[x+1][y].getGP().getNbLiberte()==0) 
 						{
 							listeGroupe.remove(grille[x+1][y].getGP());
+							if (!rencontreAllie)
+							{
+								listeGroupe.add(new GroupePion(grille[x][y],this));
+								rencontreAllie = true;
+							}
 							nbDetruit=grille[x+1][y].getGP().destruction(this);
 							if(nbDetruit==1) residu=grille[x+1][y];
 							upDateResidu = true;
 							if(couleurJoueur=="Blanc") nbPionNoirDetruit+=nbDetruit;
 							else nbPionBlancDetruit+=nbDetruit;
-							nbCaseLibre+=nbDetruit;
 						}
 					}
 				}
@@ -127,12 +129,16 @@ public class Grille
 						if (grille[x][y+1].getGP().getNbLiberte()==0)
 						{
 							listeGroupe.remove(grille[x][y+1].getGP());
+							if (!rencontreAllie)
+							{
+								listeGroupe.add(new GroupePion(grille[x][y],this));
+								rencontreAllie = true;
+							}
 							nbDetruit=grille[x][y+1].getGP().destruction(this);
 							if(nbDetruit==1) residu=grille[x][y+1];
 							upDateResidu = true;
 							if(couleurJoueur=="Blanc") nbPionNoirDetruit+=nbDetruit;
 							else nbPionBlancDetruit+=nbDetruit;
-							nbCaseLibre+=nbDetruit;
 						}
 					}
 				}
@@ -156,12 +162,16 @@ public class Grille
 						if (grille[x-1][y].getGP().getNbLiberte()==0) 
 						{
 							listeGroupe.remove(grille[x-1][y].getGP());
+							if (!rencontreAllie)
+							{
+								listeGroupe.add(new GroupePion(grille[x][y],this));
+								rencontreAllie = true;
+							}
 							nbDetruit=grille[x-1][y].getGP().destruction(this);
 							if(nbDetruit==1) residu=grille[x-1][y];
 							upDateResidu = true;
 							if(couleurJoueur=="Blanc") nbPionNoirDetruit+=nbDetruit;
 							else nbPionBlancDetruit+=nbDetruit;
-							nbCaseLibre+=nbDetruit;
 						}
 					}
 				}
@@ -185,12 +195,16 @@ public class Grille
 						if (grille[x][y-1].getGP().getNbLiberte()==0) 
 						{
 							listeGroupe.remove(grille[x][y-1].getGP());
+							if (!rencontreAllie)
+							{
+								listeGroupe.add(new GroupePion(grille[x][y],this));
+								rencontreAllie = true;
+							}
 							nbDetruit=grille[x][y-1].getGP().destruction(this);
 							if(nbDetruit==1) residu=grille[x][y-1];
 							upDateResidu = true;
 							if(couleurJoueur=="Blanc") nbPionNoirDetruit+=nbDetruit;
 							else nbPionBlancDetruit+=nbDetruit;
-							nbCaseLibre+=nbDetruit;
 						}
 					}
 				}
@@ -234,19 +248,67 @@ public class Grille
 	}
 	
 	//TODO calcul points 
-	//=> a la fin de l partie
-	//=> combler les liberte des ses groupes avec ses pions detruits
-	//=> regarder a chaque groupe s il se fait manger (seuls les groupes ayant un pion sur un bord ne seront pas detruit)
-	//=> reiterer
-	//=> compter le nombre de pions poses - nb de pions detruit
 	public void decomptePoints()
 	{
-		while(nbCaseLibre>0)
-		{
-			for(GroupePion gp : listeGroupe)
+		//mise en place des territoires
+		for (int i = 0 ; i<dim ; i++)
+			for (int j = 0 ; j<dim ; j++)
 			{
-				//TODO faire la fonction
+				if (grille[i][j]==null) grille[i][j] = new Pion(i,j,"Territoire");
+				
+				boolean rencontreTerritoire = false;
+				
+				if(caseOccupee(i+1,j) && grille[i+1][j].getCouleur()=="Territoire")
+				{
+					grille[i+1][j].getGP().ajouterPion(grille[i][j], this);
+					rencontreTerritoire = true;
+				}
+				if(caseOccupee(i,j+1) && grille[i][j+1].getCouleur()=="Territoire")
+				{
+					if(!rencontreTerritoire) 
+					{
+						grille[i][j+1].getGP().ajouterPion(grille[i][j], this);
+						rencontreTerritoire = true;
+					}
+					else if(grille[i][j+1].getGP()!=grille[i][j].getGP()) grille[i][j+1].getGP().fusion(grille[i][j].getGP());
+				}
+				if(caseOccupee(i-1,j) && grille[i-1][j].getCouleur()=="Territoire")
+				{
+					if(!rencontreTerritoire) 
+					{
+						grille[i-1][j].getGP().ajouterPion(grille[i][j], this);
+						rencontreTerritoire = true;
+					}
+					else if(grille[i-1][j].getGP()!=grille[i][j].getGP()) grille[i-1][j].getGP().fusion(grille[i][j].getGP());
+				}
+				if(caseOccupee(i,j-1) && grille[i][j-1].getCouleur()=="Territoire")
+				{
+					if(!rencontreTerritoire) 
+					{
+						grille[i][j-1].getGP().ajouterPion(grille[i][j], this);
+						rencontreTerritoire = true;
+					}
+					else if(grille[i][j-1].getGP()!=grille[i][j].getGP()) grille[i][j-1].getGP().fusion(grille[i][j].getGP());
+				}
+				
+				if(!rencontreTerritoire) grille[i][j].setGP(new Territoire(grille[i][j],this));
 			}
+		//calcul du nombre de pion sur le plateau
+		for (int i = 0 ; i<dim ; i++)
+			for (int j = 0 ; j<dim ; j++)
+			{
+			
+			}
+	}
+	
+	//TODO suppression pions morts
+	public void suppressionPionMort(ArrayList<Pion> listePionMort)
+	{
+		for(Pion p : listePionMort)
+		{
+			if(p.getCouleur()=="Blanc")nbPionBlancDetruit++;
+			else nbPionNoirDetruit++;
+			grille[p.getX()][p.getY()]=null;
 		}
 	}
 	

@@ -26,6 +26,7 @@ public class Main {
 		
 		g.jouerUnTour(2, 3);
 		System.out.println(g.getGrille()[2][3].getCouleur());
+		System.out.println(g.getGrille()[3][3].getGP().getNbLiberte());
 		
 		g.jouerUnTour("passer");
 		System.out.println("passer");
@@ -34,8 +35,6 @@ public class Main {
 		System.out.println(g.getGrille()[4][3].getCouleur());
 		
 		System.out.println(g.caseOccupee(3, 3));
-		/*System.out.println(g.getGrille()[3][3].getCouleur());
-		System.out.println(g.getGrille()[3][3].getGP().getNbLiberte());*/
 		
 		System.out.println(g.getListeGroupe());
 		
