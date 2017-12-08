@@ -39,18 +39,15 @@ public class Main {
 		System.out.println(g.getListeGroupe());
 		
 		
-		
-		
-		/*while(!g.getPartieFinie())
-		Fenetre fen = new Fenetre();
+		Fenetre fen = new Fenetre(g);
 		fen.pannel();
 		
 		while(!g.getPartieFinie())
 		{
-			//TODO d�roulement d un tour de jeu
+			//TODO deroulement d un tour de jeu
 			
 			
-		}*/
+		}
 	}
 
 }
