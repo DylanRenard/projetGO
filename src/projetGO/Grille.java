@@ -248,7 +248,7 @@ public class Grille
 	}
 	
 	//TODO calcul points 
-	public void decomptePoints()
+	public int decomptePoints()
 	{
 		//mise en place des territoires
 		for (int i = 0 ; i<dim ; i++)
@@ -257,48 +257,95 @@ public class Grille
 				if (grille[i][j]==null) grille[i][j] = new Pion(i,j,"Territoire");
 				
 				boolean rencontreTerritoire = false;
+				String couleur = "";
 				
-				if(caseOccupee(i+1,j) && grille[i+1][j].getCouleur()=="Territoire")
+				if(caseOccupee(i+1,j))
 				{
-					grille[i+1][j].getGP().ajouterPion(grille[i][j], this);
-					rencontreTerritoire = true;
-				}
-				if(caseOccupee(i,j+1) && grille[i][j+1].getCouleur()=="Territoire")
-				{
-					if(!rencontreTerritoire) 
+					if(grille[i+1][j].getCouleur()=="Territoire")
 					{
-						grille[i][j+1].getGP().ajouterPion(grille[i][j], this);
+						grille[i+1][j].getGP().ajouterPion(grille[i][j], this);
 						rencontreTerritoire = true;
 					}
-					else if(grille[i][j+1].getGP()!=grille[i][j].getGP()) grille[i][j+1].getGP().fusion(grille[i][j].getGP());
+					else couleur = grille[i+1][j].getCouleur();
+					
 				}
-				if(caseOccupee(i-1,j) && grille[i-1][j].getCouleur()=="Territoire")
+				if(caseOccupee(i,j+1))
 				{
-					if(!rencontreTerritoire) 
+					if(grille[i][j+1].getCouleur()=="Territoire")
 					{
-						grille[i-1][j].getGP().ajouterPion(grille[i][j], this);
-						rencontreTerritoire = true;
+						if(!rencontreTerritoire) 
+						{
+							grille[i][j+1].getGP().ajouterPion(grille[i][j], this);
+							rencontreTerritoire = true;
+						}
+						else if(grille[i][j+1].getGP()!=grille[i][j].getGP()) grille[i][j+1].getGP().fusion(grille[i][j].getGP());
 					}
-					else if(grille[i-1][j].getGP()!=grille[i][j].getGP()) grille[i-1][j].getGP().fusion(grille[i][j].getGP());
+					else
+					{
+						if(couleur!=grille[i][j+1].getCouleur() && couleur!="") 
+						{
+							couleur = "Neutre";
+						} 
+						else couleur = grille[i][j+1].getCouleur();
+					}
 				}
-				if(caseOccupee(i,j-1) && grille[i][j-1].getCouleur()=="Territoire")
+				if(caseOccupee(i-1,j))
 				{
-					if(!rencontreTerritoire) 
+					if(grille[i-1][j].getCouleur()=="Territoire")
 					{
-						grille[i][j-1].getGP().ajouterPion(grille[i][j], this);
-						rencontreTerritoire = true;
+						if(!rencontreTerritoire)
+						{
+							grille[i-1][j].getGP().ajouterPion(grille[i][j], this);
+							rencontreTerritoire = true;
+						}
+						else if(grille[i-1][j].getGP()!=grille[i][j].getGP()) grille[i-1][j].getGP().fusion(grille[i][j].getGP());
 					}
-					else if(grille[i][j-1].getGP()!=grille[i][j].getGP()) grille[i][j-1].getGP().fusion(grille[i][j].getGP());
+					else
+					{
+						if(couleur!=grille[i-1][j].getCouleur() && couleur!="") 
+						{
+							couleur = "Neutre";
+						} 
+						else couleur = grille[i-1][j].getCouleur();
+					}
+				}
+				if(caseOccupee(i,j-1))
+				{
+					if(grille[i][j-1].getCouleur()=="Territoire")
+					{
+						if(!rencontreTerritoire) 
+						{
+							grille[i][j-1].getGP().ajouterPion(grille[i][j], this);
+							rencontreTerritoire = true;
+						}
+						else if(grille[i][j-1].getGP()!=grille[i][j].getGP()) grille[i][j-1].getGP().fusion(grille[i][j].getGP());
+					}
+					else
+					{
+						if(couleur!=grille[i][j-1].getCouleur() && couleur!="") 
+						{
+							couleur = "Neutre";
+						} 
+						else couleur = grille[i][j-1].getCouleur();
+					}
 				}
 				
-				if(!rencontreTerritoire) grille[i][j].setGP(new Territoire(grille[i][j],this));
+				if(!rencontreTerritoire) grille[i][j].setGP(new Territoire(grille[i][j],this,couleur));
 			}
 		//calcul du nombre de pion sur le plateau
+		int nbpoint = 0;
 		for (int i = 0 ; i<dim ; i++)
 			for (int j = 0 ; j<dim ; j++)
 			{
-			
+				if (grille[i][j].getCouleur()=="Territoire")
+				{
+					Territoire t = (Territoire)grille[i][j].getGP();
+					if(t.getCouleur()=="Noir") nbpoint++;
+					else if (t.getCouleur()=="Blanc") nbpoint--;
+				}
 			}
+		
+		return nbpoint;
 	}
 	
 	//TODO suppression pions morts

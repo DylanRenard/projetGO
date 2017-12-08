@@ -5,10 +5,12 @@ public class GroupePion
 	//rassembler les pions par groupe pour avoir les "libertes" du groupe
 	
 	//Variables
-	private Pion[][] groupe;		//"grille" secondaire contenant que les elements du groupe
+	protected Pion[][] groupe;		//"grille" secondaire contenant que les elements du groupe
 	private int nbLiberte=0;		//nombre de liberte du groupe
 	
 	//Constructeur
+	public GroupePion() {}
+	
 	public GroupePion(Pion p, Grille g)		//on cree un groupe pour un pion isole
 	{
 		//recuperation des coordonnees du pion
