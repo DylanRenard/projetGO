@@ -31,15 +31,12 @@ public class Pion
 	public int getX() {return x;}
 	
 	public int getY() {return y;}
-	
-<<<<<<< HEAD:src/projetGO/Pion.java
-	public String getCouleur(){return couleur;}
-=======
+
 	public String getCouleur() {return couleur;}
 	
 	public GroupePion getGP() {return gp;}
 	
->>>>>>> master:src/main/java/Pion.java
+
 	
 	public void setGP(GroupePion gp) {this.gp = gp;}
 }

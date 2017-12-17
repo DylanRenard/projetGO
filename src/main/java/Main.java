@@ -1,10 +1,10 @@
-
-
 public class Main {
 
 	public static void main(String[] args) 
 	{
-		Grille g = new Grille(13);
+		Grille g = new Grille(19);
+		
+		System.out.println("HOOOOOO");
 		
 		g.jouerUnTour(3, 3);
 		System.out.println(g.getGrille()[3][3].getCouleur());

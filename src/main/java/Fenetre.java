@@ -1,10 +1,12 @@
 
+
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,6 +26,9 @@ public class Fenetre extends JFrame implements ActionListener
 	private JMenuItem Nouvelle = new JMenuItem("Nouvelle partie");
 	private JMenuItem save = new JMenuItem("Sauvegarder");
 	private JMenuItem quit = new JMenuItem("Quitter");
+	
+	private BufferedImage planche;
+	
 	
 	private Grille g;
 	
@@ -53,6 +58,7 @@ public class Fenetre extends JFrame implements ActionListener
 	    this.menuBar.add(Partie);
 	    this.menuBar.add(About);
 	    this.setJMenuBar(menuBar);
+	    this.setContentPane(new background());
 	    this.setVisible(true);
 	}
 
@@ -62,7 +68,7 @@ public class Fenetre extends JFrame implements ActionListener
 		
 		JButton[][] cases = new JButton[g.getDim()][g.getDim()];
 		
-		JPanel pan = new JPanel();
+		background pan = new background();
 		pan.setLayout(new GridLayout(g.getDim(), g.getDim()));
 		pan.setSize(800,800);
 		this.setLocationRelativeTo(null);
@@ -83,6 +89,13 @@ public class Fenetre extends JFrame implements ActionListener
 				pan.add(cases[i][j]);
 			}
 		}
+		/*try{
+			planche = ImageIO.read(new File("grille19x19.gif"));
+			JLabel ima = new JLabel(new ImageIcon(planche));
+			pan.add(ima);
+		}catch(IOException e){
+			
+		}*/
 		setContentPane(pan);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(600,600);
@@ -126,5 +139,6 @@ class monMouseListener implements MouseListener
 		JButton b = (JButton)e.getSource();
 		b.setBackground(Color.RED);
 	}
+	
 	
 }
