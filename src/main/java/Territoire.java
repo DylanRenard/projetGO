@@ -1,6 +1,6 @@
+import java.io.Serializable;
 
-
-public class Territoire extends GroupePion
+public class Territoire extends GroupePion implements Serializable
 {
 	private String couleur;
 	

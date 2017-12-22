@@ -1,6 +1,6 @@
+import java.io.Serializable;
 
-
-public class Pion 
+public class Pion implements Serializable
 {
 	//Variables
 	private int x;				//coordonnee en x

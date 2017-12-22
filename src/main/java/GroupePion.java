@@ -1,6 +1,6 @@
+import java.io.Serializable;
 
-
-public class GroupePion 
+public class GroupePion implements Serializable
 {
 	//rassembler les pions par groupe pour avoir les "libertes" du groupe
 	

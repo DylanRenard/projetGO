@@ -1,8 +1,11 @@
 
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Grille
+public class Grille implements Serializable
 {
 	//Variables
 	private int dim;							//dimension de la grille
@@ -16,6 +19,7 @@ public class Grille
 	private boolean joueurpasse = false;		//le joueur precedent a passe
 	private ArrayList <GroupePion> listeGroupe;	//liste des groupes presents dans la grille
 	private boolean partieFinie = false;		//indicateur de fin de partie
+	private static int saveCount = 0; 
 	
 	//Constructeur
 	public Grille(int dim)
@@ -358,6 +362,20 @@ public class Grille
 			else nbPionNoirDetruit++;
 			grille[p.getX()][p.getY()]=null;
 		}
+	}
+	
+	public String SauverPartie() {
+		try {
+
+			FileOutputStream fos = new FileOutputStream("sauvegarde" + saveCount++);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void ChargerPartie(String savePath) {
+		
 	}
 	
 	//Getteurs Setteurs
