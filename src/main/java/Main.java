@@ -38,8 +38,8 @@ public class Main {
 		
 		System.out.println(g.getListeGroupe());
 		
-		g.SauverPartie();
-		/*Fenetre fen = new Fenetre(g);
+
+		Fenetre fen = new Fenetre(g);
 		fen.pannel();
 		
 		while(!g.getPartieFinie())

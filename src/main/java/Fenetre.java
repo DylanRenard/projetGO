@@ -24,8 +24,10 @@ public class Fenetre extends JFrame implements ActionListener
 	private JMenu Partie = new JMenu("Partie");
 	private JMenu About = new JMenu("A propos");
 	private JMenuItem Nouvelle = new JMenuItem("Nouvelle partie");
+	private JMenuItem Charger = new JMenuItem("Charger une partie");
 	private JMenuItem save = new JMenuItem("Sauvegarder");
 	private JMenuItem quit = new JMenuItem("Quitter");
+	private JMenuItem infos = new JMenuItem("informations");
 	
 	private BufferedImage planche;
 	
@@ -42,14 +44,14 @@ public class Fenetre extends JFrame implements ActionListener
 	
 	    //On initialise nos menus      
 	    this.Partie.add(Nouvelle);
-	
+	    this.Partie.add(Charger);
 	
 	    //Ajout du sous-menu dans notre menu
 	    this.Partie.add(save);
 	    //Ajout d'un séparateur
 	    this.Partie.addSeparator();
 	    
-	            
+	    this.About.add(infos);
 	     
 	    this.Partie.add(quit);
 	

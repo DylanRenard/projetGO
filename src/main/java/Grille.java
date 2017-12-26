@@ -379,6 +379,7 @@ public class Grille implements Serializable
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return "TODO";
 	}
 	
 	public void ChargerPartie(String savePath) {
