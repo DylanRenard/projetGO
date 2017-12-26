@@ -38,8 +38,8 @@ public class Main {
 		
 		System.out.println(g.getListeGroupe());
 		
-		
-		Fenetre fen = new Fenetre(g);
+		g.SauverPartie();
+		/*Fenetre fen = new Fenetre(g);
 		fen.pannel();
 		
 		while(!g.getPartieFinie())
@@ -47,7 +47,7 @@ public class Main {
 			//TODO deroulement d un tour de jeu
 			
 			
-		}
+		}*/
 	}
 
 }
