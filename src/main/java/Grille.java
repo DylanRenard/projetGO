@@ -1,16 +1,29 @@
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Grille implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//Variables
 	private int dim;							//dimension de la grille
 	private Pion[][] grille;					//representation de la grille
-	private String couleurJoueur = "Blanc";		//couleur du joueur en cour
+	private String couleurJoueur = "Blanc";		//couleur du joueur en cours
 	private Pion residu = null;					//memoire du pion unique detruit au tour precedent
 	@SuppressWarnings("unused")
 	private int nbPionBlancDetruit = 0;			//nombre de pion blanc detruit
@@ -19,7 +32,6 @@ public class Grille implements Serializable
 	private boolean joueurpasse = false;		//le joueur precedent a passe
 	private ArrayList <GroupePion> listeGroupe;	//liste des groupes presents dans la grille
 	private boolean partieFinie = false;		//indicateur de fin de partie
-	private static int saveCount = 0; 
 	
 	//Constructeur
 	public Grille(int dim)
@@ -228,6 +240,7 @@ public class Grille implements Serializable
 	{
 		if (passer=="passer")
 		{
+			Main.waitingForInput = false;
 			if(joueurpasse)
 			{
 				partieFinie = true;
@@ -240,6 +253,8 @@ public class Grille implements Serializable
 			else nbPionNoirDetruit++;
 			
 			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;
+		}else{
+			System.out.println("il faut passer le mot passer en argument");
 		}
 	}
 	
@@ -247,11 +262,12 @@ public class Grille implements Serializable
 	{
 		if(placerPion(x,y))
 		{
+			Main.waitingForInput = false;		//indique au programme principal qu'il n'a plus à attendre d'informations
 			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;	//la couleur du joueur change pour le prochain tour
 			joueurpasse=false;
-			return false;
-		}else{
 			return true;
+		}else{
+			return false;
 		}
 	}
 	
@@ -357,7 +373,7 @@ public class Grille implements Serializable
 	}
 	
 	
-	public void suppressionPionMort(ArrayList<Pion> listePionMort)
+	public void suppressionPionMort(ArrayList<Pion> listePionMort)		//TODO : envoyer message à la fenetre pour mettre à jour le bouton correspondant au pion mort
 	{
 		for(Pion p : listePionMort)
 		{
@@ -368,12 +384,47 @@ public class Grille implements Serializable
 	}
 	
 	public String SauverPartie() {
+		ObjectOutputStream oos = null;
+		int saveCount = 0;
+		try {
+		InputStream fCount = new FileInputStream("sauvegardes/count.txt");
+		BufferedReader br = new BufferedReader(new InputStreamReader((fCount)));
+		saveCount = Integer.parseInt(br.readLine());
+		OutputStream fCount2 = new FileOutputStream("sauvegardes/count.txt");
+		PrintWriter pw = new PrintWriter(fCount2);
+		pw.println(++saveCount);
+		pw.close();
+		} catch (NumberFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		try {
 
-			FileOutputStream fos = new FileOutputStream("sauvegarde" + saveCount++);
+			FileOutputStream fos = new FileOutputStream("sauvegardes/sauvegarde" + saveCount);
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(this);
+			oos.flush();
+			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			if(oos != null){
+				try {
+					oos.flush();
+					oos.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return "sauvegarde" + saveCount +1;
 	}

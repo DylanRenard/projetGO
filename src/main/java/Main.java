@@ -42,6 +42,10 @@ public class Main {
 
 		Fenetre fen = new Fenetre(g);
 		fen.pannel();
+		 
+		g.SauverPartie();
+		
+		afficherEtatConsole(g);
 		
 		while(!g.getPartieFinie())
 		{
@@ -52,5 +56,19 @@ public class Main {
 			}
 		}
 	}
-
+	
+	public static void afficherEtatConsole(Grille g){
+		for(int i = 0; i<g.getDim();i++){
+			for(int j = 0; j<g.getDim(); j++){
+				if(g.getGrille()[i][j]==null){
+					System.out.print("+");
+				}else if(g.getGrille()[i][j].getCouleur()=="Blanc"){
+					System.out.print("b");
+				}else if(g.getGrille()[i][j].getCouleur()=="Noir"){
+					System.out.print("n");
+				}
+			}
+			System.out.print("\n");
+		}
+	}
 }
