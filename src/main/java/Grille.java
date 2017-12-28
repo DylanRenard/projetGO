@@ -1,10 +1,7 @@
 
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -246,12 +243,15 @@ public class Grille implements Serializable
 		}
 	}
 	
-	public void jouerUnTour(int x,int y)
+	public boolean jouerUnTour(int x,int y)	//Indique si le tour à bien été joué
 	{
 		if(placerPion(x,y))
 		{
 			if(couleurJoueur=="Blanc") couleurJoueur="Noir"; else couleurJoueur="Blanc" ;	//la couleur du joueur change pour le prochain tour
 			joueurpasse=false;
+			return false;
+		}else{
+			return true;
 		}
 	}
 	
@@ -367,19 +367,15 @@ public class Grille implements Serializable
 		}
 	}
 	
-	public void SauverPartie() {
+	public String SauverPartie() {
 		try {
 
-			FileOutputStream fos = new FileOutputStream(new File("E:\\ProjetGO\\sauvegarde" + saveCount++)); //chemin du fichier a changer
-			ObjectOutputStream objetOut = new ObjectOutputStream(fos);
+			FileOutputStream fos = new FileOutputStream("sauvegarde" + saveCount++);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		return "TODO";
+		return "sauvegarde" + saveCount +1;
 	}
 	
 	public void ChargerPartie(String savePath) {
@@ -396,4 +392,6 @@ public class Grille implements Serializable
 	public Pion getResidu() {return residu;}
 	
 	public ArrayList <GroupePion> getListeGroupe() {return listeGroupe;}
+	
+	public String CouleurJoueur(){return couleurJoueur;}
 }

@@ -1,5 +1,6 @@
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -37,7 +38,7 @@ public class Fenetre extends JFrame implements ActionListener
 	public Fenetre(Grille g)
 	{
 		this.g=g;
-		this.setSize(800, 800);
+		this.setSize(800, 900);
 	    this.setTitle("GO");
 	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    this.setLocationRelativeTo(null);
@@ -72,7 +73,7 @@ public class Fenetre extends JFrame implements ActionListener
 		
 		background pan = new background();
 		pan.setLayout(new GridLayout(g.getDim(), g.getDim()));
-		pan.setSize(800,800);
+		pan.setSize(800,850);
 		this.setLocationRelativeTo(null);
 		for (int i = 0; i < g.getDim(); i++)
 		{
@@ -91,13 +92,6 @@ public class Fenetre extends JFrame implements ActionListener
 				pan.add(cases[i][j]);
 			}
 		}
-		/*try{
-			planche = ImageIO.read(new File("grille19x19.gif"));
-			JLabel ima = new JLabel(new ImageIcon(planche));
-			pan.add(ima);
-		}catch(IOException e){
-			
-		}*/
 		setContentPane(pan);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(600,600);
@@ -106,6 +100,7 @@ public class Fenetre extends JFrame implements ActionListener
 	
 	public void actionPerformed(ActionEvent e) 
 	{
+		System.out.println("coucou");
   		// TODO Auto-generated method stub
   		System.exit(0);
   	}

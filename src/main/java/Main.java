@@ -1,5 +1,6 @@
 public class Main {
 
+	public static boolean waitingForInput = true;
 	public static void main(String[] args) 
 	{
 		Grille g = new Grille(19);
@@ -44,10 +45,12 @@ public class Main {
 		
 		while(!g.getPartieFinie())
 		{
-			//TODO deroulement d un tour de jeu
-			
-			
-		}*/
+			System.out.println("C'est au tour du joueur " + g.CouleurJoueur() + " de jouer");
+			waitingForInput = true;
+			while(waitingForInput){
+				
+			}
+		}
 	}
 
 }
