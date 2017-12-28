@@ -43,9 +43,10 @@ public class Main {
 		Fenetre fen = new Fenetre(g);
 		fen.pannel();
 		 
-		g.SauverPartie();
+		System.out.println("La partie en cours : " + g.SauverPartie());
 		
-		afficherEtatConsole(g);
+		//afficherEtatConsole(g);
+		Grille.ChargerPartie("/sauvegardes");
 		
 		while(!g.getPartieFinie())
 		{

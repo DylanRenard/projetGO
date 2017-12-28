@@ -1,5 +1,6 @@
 
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,11 +9,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
 
 public class Grille implements Serializable
 {
@@ -383,16 +389,16 @@ public class Grille implements Serializable
 		}
 	}
 	
-	public String SauverPartie() {
+	public String SauverPartie() {						//On sauvegarde la partie en cours
 		ObjectOutputStream oos = null;
-		int saveCount = 0;
-		try {
+		int saveCount = 0;									//saveCount indique à quelle sauvegarde on est rendu
+		try {											//Tout ce try sert à récupérer la valeur de la dernière sauvegarde et à l'augmenter. Ainsi on incrémente toujours la valeur même en re-exécutant le programme
 		InputStream fCount = new FileInputStream("sauvegardes/count.txt");
 		BufferedReader br = new BufferedReader(new InputStreamReader((fCount)));
 		saveCount = Integer.parseInt(br.readLine());
 		OutputStream fCount2 = new FileOutputStream("sauvegardes/count.txt");
 		PrintWriter pw = new PrintWriter(fCount2);
-		pw.println(++saveCount);
+		pw.println(++saveCount);							//On réécrit le fichier avec son ancienne valeur augmentée de 1
 		pw.close();
 		} catch (NumberFormatException e1) {
 			// TODO Auto-generated catch block
@@ -402,12 +408,12 @@ public class Grille implements Serializable
 			e1.printStackTrace();
 		}
 		
-		try {
+		try {				//On va créer un fichier de sérialisation
 
-			FileOutputStream fos = new FileOutputStream("sauvegardes/sauvegarde" + saveCount);
+			FileOutputStream fos = new FileOutputStream("sauvegardes/sauvegarde" + saveCount);			//on créer le fichier
 			oos = new ObjectOutputStream(fos);
-			oos.writeObject(this);
-			oos.flush();
+			oos.writeObject(this);								//on écrit dedans la sérialisation
+			oos.flush();													// on "valide" l'écriture
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -426,11 +432,38 @@ public class Grille implements Serializable
 				}
 			}
 		}
-		return "sauvegarde" + saveCount +1;
+		return "sauvegarde" + saveCount;		//On retourne le nom de fichier;
 	}
 	
-	public void ChargerPartie(String savePath) {
-		
+	public static Grille ChargerPartie(String savePath) {
+		Grille charge = null;
+		try {
+			URI adr = new URI(savePath);
+			JFileChooser choix = new JFileChooser();
+			int retour = choix.showOpenDialog(null);
+			if(retour == JFileChooser.APPROVE_OPTION){
+				String c = choix.getSelectedFile().getAbsolutePath();
+				ObjectInputStream ois = null;
+				try {
+					FileInputStream fichier = new FileInputStream(c);
+					ois = new ObjectInputStream(fichier);
+					charge = (Grille)ois.readObject();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return charge;
 	}
 	
 	//Getteurs Setteurs
